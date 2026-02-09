@@ -61,6 +61,8 @@ const imageCanvas = document.querySelector("#image-canvas")
 const imgInput = document.querySelector("#image-input")
 const canvasCtx = imageCanvas.getContext("2d")
 const restButton = document.querySelector("#reset-btn")
+const downloadButton = document.querySelector('#download-btn')
+
 let file = null
 let image = null
 
@@ -92,12 +94,16 @@ function createFilterElement(name, value, min, max, unit = "%") {
     return div
 }
 
+function createFilters() {
+    Object.keys(filters).forEach(key => {
+        const filterElement = createFilterElement(key, filters[key].value, filters[key].min, filters[key].max, filters[key].unit)
 
-Object.keys(filters).forEach(key => {
-    const filterElement = createFilterElement(key, filters[key].value, filters[key].min, filters[key].max, filters[key].unit)
+        filtersContainer.appendChild(filterElement)
+    })
+}
 
-    filtersContainer.appendChild(filterElement)
-})
+createFilters()
+
 
 imgInput.addEventListener("change", (event) => {
 
@@ -201,5 +207,15 @@ restButton.addEventListener("click", () => {
             unit: "%"
         },
     }
-applyFilters()
+    applyFilters()
+
+    filtersContainer.innerHTML = ""
+    createFilters()
+})
+
+downloadButton.addEventListener("click", () => {
+    const link = document.createElement("a")
+    link.download = "Your's Edited-image.png"
+    link.href = imageCanvas.toDataURL()
+    link.click()
 })
